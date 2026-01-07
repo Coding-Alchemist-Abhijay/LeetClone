@@ -4,7 +4,7 @@ import db from "@/lib/db";
 
 export const POST = async (NextRequest) => {
     try {
-
+        
     } catch(error) {
         
     }

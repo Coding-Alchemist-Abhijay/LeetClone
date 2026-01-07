@@ -1,10 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const leetcodeFontStack = "'Lato', 'PingFang SC', 'Microsoft YaHei', 'Arial', 'sans-serif'";
 
 export default function SignupPage() {
+
+  const router = useRouter();
+
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,22 +24,51 @@ export default function SignupPage() {
     setLoading(true);
     setError('');
     setSuccess(false);
-
-    // Dummy signup logic
-    setTimeout(() => {
-      setLoading(false);
-      if (!form.username || !form.email || !form.password) {
-        setError('Please fill in all fields.');
-      } else if (!form.email.includes('@')) {
-        setError('Please enter a valid email address.');
-      } else if (form.password.length < 6) {
-        setError('Password should be at least 6 characters.');
-      } else {
+    try {
+      const response = await fetch('/api/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({name : form.username, email: form.email, password: form.password}),
+      });
+      const data = await response.json();
+      if (response.ok) {
         setSuccess(true);
-        setForm({ username: '', email: '', password: '' });
+        setLoading(false);
+        router.replace('/');
+      } else {
+        setError(data.errors);
+        setLoading(false);
       }
-    }, 1100);
+    } catch (error) {
+      console.log(error)
+      setError(error.message);
+      setLoading(false);
+    }
   };
+
+  // Helper to render errors, display each error in separate lines
+  function renderErrors(error) {
+    if (!error) return null;
+    if (typeof error === 'string') {
+      return <div>{error}</div>;
+    }
+    if (Array.isArray(error)) {
+      return error.map((err, idx) => (
+        <div key={idx}>{err}</div>
+      ));
+    }
+    // If it's an object (e.g. {field: message, ...}), render each value as a line, without adding any keys
+    if (typeof error === 'object') {
+      return Object.values(error).map((err, idx) =>
+        Array.isArray(err)
+          ? err.map((subErr, subIdx) => <div key={idx + '-' + subIdx}>{subErr}</div>)
+          : <div key={idx}>{err}</div>
+      );
+    }
+    return <div>{String(error)}</div>;
+  }
 
   return (
     <div
@@ -120,7 +153,6 @@ export default function SignupPage() {
               value={form.username}
               onChange={handleChange}
               autoComplete="username"
-              required
               className="w-full bg-[#fafbfc] border border-[#d9d9e3] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#FFA116] transition"
               style={{
                 fontFamily: leetcodeFontStack,
@@ -141,7 +173,6 @@ export default function SignupPage() {
               value={form.email}
               onChange={handleChange}
               autoComplete="email"
-              required
               className="w-full bg-[#fafbfc] border border-[#d9d9e3] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#FFA116] transition"
               style={{
                 fontFamily: leetcodeFontStack,
@@ -162,7 +193,6 @@ export default function SignupPage() {
               value={form.password}
               onChange={handleChange}
               autoComplete="new-password"
-              required
               className="w-full bg-[#fafbfc] border border-[#d9d9e3] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#FFA116] transition"
               style={{
                 fontFamily: leetcodeFontStack,
@@ -172,7 +202,32 @@ export default function SignupPage() {
             />
           </div>
           {error && (
-            <div className="text-red-600 text-xs text-center" style={{ fontFamily: leetcodeFontStack }}>{error}</div>
+            <div
+              className="flex items-center justify-center bg-[#ffeaea] border border-[#ff7875] rounded px-3 py-2 mt-2 mb-1 shadow-sm"
+              style={{
+                fontFamily: leetcodeFontStack,
+                color: '#cf1322',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                fontSize: '13px'
+              }}
+              role="alert"
+            >
+              <svg
+                aria-hidden="true"
+                className="mr-2"
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <circle cx="10" cy="10" r="10" fill="#ff7875" />
+                <path stroke="#fff" strokeWidth="2" strokeLinecap="round" d="M10 6v4.5M10 14h.01"/>
+              </svg>
+              <div className="flex flex-col items-start w-full">
+                {renderErrors(error)}
+              </div>
+            </div>
           )}
           {success && (
             <div className="text-green-600 text-xs text-center" style={{ fontFamily: leetcodeFontStack }}>
@@ -209,5 +264,4 @@ export default function SignupPage() {
     </div>
   );
 }
-
 
