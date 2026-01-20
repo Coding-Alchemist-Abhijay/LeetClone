@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import {toast} from "react-hot-toast"
+import { useStyleRegistry } from 'styled-jsx';
 
 const leetcodeFontStack = "'Lato', 'PingFang SC', 'Microsoft YaHei', 'Arial', 'sans-serif'";
 
@@ -13,6 +15,7 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [emailVerify, setEmailVerify] = useState("");
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -34,9 +37,10 @@ export default function SignupPage() {
       });
       const data = await response.json();
       if (response.ok) {
+        setEmailVerify(data.message);
+        toast.success(data.message);
         setSuccess(true);
         setLoading(false);
-        router.replace('/');
       } else {
         setError(data.errors);
         setLoading(false);
@@ -113,8 +117,9 @@ export default function SignupPage() {
                 <path fill="#EA4335" d="M10 4.06c1.85 0 3.11.8 3.82 1.48l2.8-2.73C14.95 1.21 12.68 0 10 0 6.13 0 2.81 2.27 1.08 5.45l3.2 2.7C5.09 6.89 7.34 5.09 10 5.09"></path>
               </g>
             </svg>
-            <span className="flex-grow text-center text-[14px] font-medium text-[#4b587c] tracking-tight"
-              style={{ fontFamily: leetcodeFontStack }}>Sign up with Google</span>
+            <a href="/google" className="flex-grow text-center text-[14px] font-medium text-[#4b587c] tracking-tight" style={{ fontFamily: leetcodeFontStack }}>
+              Sign up with Google
+            </a>
           </button>
           <button
             className="flex items-center w-full border border-[#d5d8df] rounded px-3 py-2 mb-3 bg-white hover:bg-[#f5f6fa] transition-colors"
@@ -128,10 +133,9 @@ export default function SignupPage() {
                 fill="#fff"
               />
             </svg>
-            <span className="flex-grow text-center text-[14px] font-medium text-[#4b587c] tracking-tight"
-              style={{ fontFamily: leetcodeFontStack }}>
-              Sign up with GitHub
-            </span>
+            <a href="/github" className="flex-grow text-center text-[14px] font-medium text-[#4b587c] tracking-tight" style={{ fontFamily: leetcodeFontStack }}>
+              Sign in with GitHub
+            </a>
           </button>
           <div className="flex items-center w-full mb-4">
             <div className="flex-grow border-t border-[#edf0f5]" />
@@ -229,9 +233,32 @@ export default function SignupPage() {
               </div>
             </div>
           )}
-          {success && (
-            <div className="text-green-600 text-xs text-center" style={{ fontFamily: leetcodeFontStack }}>
-              Signup successful! You can now log in.
+          {emailVerify && (
+            <div
+              className="flex items-center justify-center bg-[#ecfdf5] border border-[#34d399] rounded px-3 py-2 mt-2 mb-1 shadow-sm"
+              style={{
+                fontFamily: leetcodeFontStack,
+                color: '#059669',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                fontSize: '13px'
+              }}
+              role="status"
+            >
+              <svg
+                aria-hidden="true"
+                className="mr-2"
+                width="16"
+                height="16"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <circle cx="10" cy="10" r="10" fill="#34d399" />
+                <path stroke="#fff" strokeWidth="2" strokeLinecap="round" d="M6.5 10.5l2 2 5-5"/>
+              </svg>
+              <div className="flex flex-col items-start w-full">
+                {emailVerify}
+              </div>
             </div>
           )}
           <button

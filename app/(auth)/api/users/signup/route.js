@@ -5,6 +5,33 @@ import { signupSchema } from "@/lib/validations/auth.schema";
 import { ApiError } from "@/app/utils/ApiError";
 import { ApiResponse } from "@/app/utils/ApiResponse";
 import { redis } from "@/lib/redis";
+import { sendEmail, emailVerificationMailgenContent } from "@/app/utils/mail";
+
+export async function GET(req) {
+  try {
+    const cookie = req.cookies.get("session_id")?.value;
+    if (cookie) {
+      const user = await redis.get(cookie);
+      if (user) {
+        const dbUser = await db.user.findUnique({
+          where: {
+            id: user.id,
+          },
+        });
+        if (dbUser && dbUser.isEmailVerified) {
+          return new Response(null, { status: 200 });
+        }
+      }
+    }
+    return new Response(null, { status: 204 });
+  } catch (error) {
+    console.log(error)
+    return NextResponse.json(
+      new ApiError(500, null, error?.message || "Internal Server Error"),
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(req) {
   try {
@@ -54,11 +81,26 @@ export async function POST(req) {
         createdAt: true,
       },
     });
-
     const Session_Id = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.randomBytes(32).toString('hex');
     await redis.set(
       Session_Id,
       { id: newUser.id, email: newUser.email },
+      { ex: 60 * 60 * 24 * 7 } 
+    );
+
+    await sendEmail({
+      email: newUser?.email,
+      subject: "Please verify your email",
+      mailgenContent: emailVerificationMailgenContent(
+        newUser.name,
+        `${new URL(`/api/users/verify-email/${hashedToken}`, req.url)}`,
+      ),
+    });
+
+    await redis.set(
+      hashedToken,
+      { id: newUser.id },
       { ex: 60 * 60 * 24 * 7 } 
     );
 
@@ -69,7 +111,7 @@ export async function POST(req) {
           id: newUser.id,
           email: newUser.email,
         },
-        "User created successfully"
+        "Email verification required please check your email"
       ),
       { status: 201 }
     );
@@ -81,11 +123,13 @@ export async function POST(req) {
       path: "/",
       sameSite : "lax",
       maxAge: 60 * 60 * 24 * 7,
+      secure: process.env.NODE_ENV === "production"
     });
 
     return response;
   
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       new ApiError(
         500,
