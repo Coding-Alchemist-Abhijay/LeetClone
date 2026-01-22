@@ -7,16 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum userRole {
+  USER
+  ADMIN
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
   salt      String
+  role      userRole @default(USER)
+  imageUrl  String   @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAMAAACahl6sAAAAD1BMVEWgw/9DdOA8cN+HrfZmkOpY+ADuAAACkklEQVR4nO2c25arIBAFR/H/v3nGmGQy53hDGvaWVfWUR2ptugE1fH0BAAAAAAAAAAAAAAAAAACADymlaUpJPYwi0jCOw5txuKXNNKwzqQeWxTRuaDySuY/LnsYD9QBPkQ415lT8yyWd0LiDyZk4bjC/tlrVOr5Fn6VhHEq2xzCqh7xKRnlYZ3LJw9DkmoafSV6/+sSrd51cBlexWhoLPKwm1/WJNeMzuco8jEwKPWzWxZJKXzCp92IPl0jKRTwa18W9iZ9JhIeDSIiHg0mMh0G5x4joEylfRBbkS0mQhz6SkObrIBLloRaJKhF5kZTu4H8R7+XDPNRzqxuRsKalXtsR+R+tSJyHWCSu/XYjIl5H4lb2bkTU+/iotiU/InYj0s0JsZszez9PUWKKxEAkpkj0JRITiUEgMZE4BNLPa4V+RMpN1AIvSj0sSv1BWePy8ShsXB4ta6FIRD34P/TydVA/32tdNlEPe4VePC6ZqIe8Tn7Bq0e8SebCqB7uDr14HPwF5hP/v8OcqxR7jZnjUIy2ifvsp3KLNJ6kbZU7aSys7e2dduw5/ATzKphxmO5qAQAAAAC1mC8RGWfeh6n595TudLHIwWF3djO3+XsPyiGmF6VcfEdidWBMpx8CbWCSTJmEiUppFr8on9gFfmL6RKJx6kqaTAT3vsRLvGiqUSONN+1SiatwrUp8jf9Lkw4W98nyLtVDaeRRfe9Suzo+qPkSpVkcC/WmV1uPaiaN86hn0t6jTp00rPOqJoKJNRPehUUe8XtIlUf05JIFEt25JJX+JNJDGEisiNKjH5HIIpGKREYi9YhswIgggggiiCCCCCKIIIIIIogggggiiCCCCCKIIIIIIogggggiiCCCCCKGIt9PqDNI8ZLfZgAAAABJRU5ErkJggg==")
   isEmailVerified Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  oauthAccounts OAuthAccount[] 
+  oauthAccounts OAuthAccount[]
 }
 
 enum OAuthProvider {

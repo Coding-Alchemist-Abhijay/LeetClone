@@ -106,11 +106,15 @@ export default function LoginPage() {
       >
         <div className="flex flex-col items-center">
           <img
-            src="https://leetcode.com/static/images/LeetCode_logo.png"
+            src="/logo.svg"
             alt="LeetCode"
-            style={{ width: 50, height: 50 }}
+            width={50}
+            height={50}
             className="mb-4"
             draggable="false"
+            onError={(e) => {
+              console.error('Failed to load logo:', e.target.src);
+            }}
           />
           <div
             className="mb-3 text-[24px] font-bold text-[#262626]"

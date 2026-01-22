@@ -92,10 +92,15 @@ export default function SignupPage() {
       >
         <div className="flex flex-col items-center">
           <img
-            src="https://leetcode.com/static/images/LeetCode_logo.png"
+            src="/logo.svg"
             alt="LeetCode"
-            className="w-16 h-16 mb-2"
+            width={64}
+            height={64}
+            className="mb-2"
             draggable={false}
+            onError={(e) => {
+              console.error('Failed to load logo:', e.target.src);
+            }}
           />
           <h1 className="text-xl font-bold mb-2 tracking-tight" style={{ fontFamily: leetcodeFontStack }}>Sign Up</h1>
           <p className="text-xs text-[#4b587c] mb-4" style={{ fontFamily: leetcodeFontStack, fontWeight: 400 }}>
