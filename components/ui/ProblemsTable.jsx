@@ -31,13 +31,19 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
+import CreatePlaylistModal from "@/components/ui/create-playlist";
+import AddToPlaylistModal from "@/components/ui/add-to-playlist";
 
 const ProblemsTable = ({ problems, user }) => {
   const [search, setSearch] = useState("");
   const [difficulty, setDifficulty] = useState("ALL");
   const [selectedTag, setSelectedTag] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAddToPlaylistModalOpen, setIsAddToPlaylistModalOpen] =
+    useState(false);
+  const [selectedProblemId, setSelectedProblemId] = useState(null);
   // Extract all unique tags from problems
   const allTags = useMemo(() => {
     if (!Array.isArray(problems)) return [];
@@ -377,6 +383,19 @@ const ProblemsTable = ({ problems, user }) => {
           </div>
         </div>
       )}
+      {/* Modals */}
+      <CreatePlaylistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePlaylist}
+      />
+
+      <AddToPlaylistModal
+        isOpen={isAddToPlaylistModalOpen}
+        onClose={() => setIsAddToPlaylistModalOpen(false)}
+        onSubmit={handleAddToPlaylist}
+        problemId={selectedProblemId}
+      />
     </div>
   );
 };

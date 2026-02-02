@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { redis } from "@/lib/redis";
 
 export async function POST(request, { params }) {
   try {

@@ -36,8 +36,10 @@ export async function GET() {
       imageUrl : true,
       role : true, 
       problems : true,
+      submissions : true,
+      solvedProblems : true,
+      playlists : true,
     },
   });
-
   return NextResponse.json({ user });
 }

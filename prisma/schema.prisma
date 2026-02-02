@@ -23,8 +23,8 @@ model User {
   isEmailVerified Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  oauthAccounts OAuthAccount[]
-  problems Problem[]
+  oauthAccounts OAuthAccount[] 
+  problems Problem[] 
   solvedProblems  ProblemSolved[]
   submissions Submission[]
   playlists  Playlist[]

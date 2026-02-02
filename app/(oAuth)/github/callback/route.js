@@ -29,7 +29,9 @@ export async function GET(req) {
         });
         if(!githubResponse.ok) return NextResponse.redirect("http://localhost:3000/login");
         const githubData = await githubResponse.json();
-        const {id : githubUserId, name} = githubData;
+        const { id: githubUserId, name, login } = githubData;
+
+        const safeName = name ?? login ?? email.split('@')[0];    
 
         const githubUserResponse = await fetch('https://api.github.com/user/emails', {
             headers : {
@@ -73,7 +75,7 @@ export async function GET(req) {
         // Case 3: user does not exist, create user and oAuthAccount
         user = await db.user.create({
             data: {
-                name,
+                name : safeName,
                 email,
                 password: '',      // As no password for oAuth users
                 salt: '',          // No salt for oAuth user
