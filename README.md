@@ -1,4 +1,4 @@
-# 🚀 LeetCode Clone – Full Stack Coding Platform
+# 🚀 LeetClone – Full Stack Coding Platform
 
 A full-stack **LeetCode-style coding platform** built using **Next.js App Router**, featuring authentication, submissions, playlists, user profiles, and OAuth.
 
