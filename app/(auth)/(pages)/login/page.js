@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const leetcodeFontStack = "'Lato', 'PingFang SC', 'Microsoft YaHei', 'Arial', 'sans-serif'";
 
@@ -38,6 +39,7 @@ function renderErrors(error) {
 export default function LoginPage() {
   const router = useRouter();
 
+  // remove admin flag from form state
   const [form, setForm] = useState({ username: '', password: '', remember: false });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,6 +91,8 @@ export default function LoginPage() {
     }
   };
 
+  // Make sure text in input boxes is visible
+  // Set text color to black explicitly for the username and password inputs
   return (
     <div
       className="bg-[#f5f6fa] min-h-screen flex flex-col items-center justify-center"
@@ -105,16 +109,14 @@ export default function LoginPage() {
         }}
       >
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src="/logo.svg"
             alt="LeetCode"
             width={50}
             height={50}
             className="mb-4"
             draggable="false"
-            onError={(e) => {
-              console.error('Failed to load logo:', e.target.src);
-            }}
+            priority
           />
           <div
             className="mb-3 text-[24px] font-bold text-[#262626]"
@@ -194,6 +196,8 @@ export default function LoginPage() {
                 fontFamily: leetcodeFontStack,
                 fontWeight: 400,
                 letterSpacing: '0.01em',
+                color: '#111111', // <-- make sure input text is visible
+                backgroundColor: '#fafbfc', // reinforce bg also
               }}
             />
           </div>
@@ -214,9 +218,12 @@ export default function LoginPage() {
                 fontFamily: leetcodeFontStack,
                 fontWeight: 400,
                 letterSpacing: '0.01em',
+                color: '#111111', // <-- make sure input text is visible
+                backgroundColor: '#fafbfc',
               }}
             />
           </div>
+          {/* Increased Remember me text and color for better visibility */}
           <div className="flex items-center justify-between text-xs" style={{ fontFamily: leetcodeFontStack }}>
             <label className="flex items-center" style={{ fontFamily: leetcodeFontStack }}>
               <input
@@ -226,7 +233,7 @@ export default function LoginPage() {
                 checked={form.remember}
                 onChange={handleChange}
               />
-              Remember me
+              <span className="text-sm font-bold text-[#262626]">Remember me</span>
             </label>
             <a
               href="/login/forgot-password"
@@ -237,6 +244,7 @@ export default function LoginPage() {
               Forgot Password?
             </a>
           </div>
+          {/* Removed login as admin checkbox */}
           {error && (
             <div className="text-red-600 text-xs text-center" style={{ fontFamily: leetcodeFontStack }}>
               {renderErrors(error)}

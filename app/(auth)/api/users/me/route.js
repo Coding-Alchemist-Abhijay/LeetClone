@@ -34,6 +34,8 @@ export async function GET() {
       name: true,
       email: true,
       imageUrl : true,
+      role : true, 
+      problems : true,
     },
   });
 

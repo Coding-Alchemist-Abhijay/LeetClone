@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {toast} from "react-hot-toast"
 import { useStyleRegistry } from 'styled-jsx';
+import Image from 'next/image';
 
 const leetcodeFontStack = "'Lato', 'PingFang SC', 'Microsoft YaHei', 'Arial', 'sans-serif'";
 
@@ -91,16 +92,14 @@ export default function SignupPage() {
         }}
       >
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src="/logo.svg"
             alt="LeetCode"
             width={64}
             height={64}
             className="mb-2"
             draggable={false}
-            onError={(e) => {
-              console.error('Failed to load logo:', e.target.src);
-            }}
+            priority
           />
           <h1 className="text-xl font-bold mb-2 tracking-tight" style={{ fontFamily: leetcodeFontStack }}>Sign Up</h1>
           <p className="text-xs text-[#4b587c] mb-4" style={{ fontFamily: leetcodeFontStack, fontWeight: 400 }}>
@@ -167,6 +166,8 @@ export default function SignupPage() {
                 fontFamily: leetcodeFontStack,
                 fontWeight: 400,
                 letterSpacing: '0.01em',
+                color: "#111", // Make text visible in input
+                backgroundColor: "#fafbfc"
               }}
             />
           </div>
@@ -187,6 +188,8 @@ export default function SignupPage() {
                 fontFamily: leetcodeFontStack,
                 fontWeight: 400,
                 letterSpacing: '0.01em',
+                color: "#111", // Make text visible in input
+                backgroundColor: "#fafbfc"
               }}
             />
           </div>
@@ -207,6 +210,8 @@ export default function SignupPage() {
                 fontFamily: leetcodeFontStack,
                 fontWeight: 400,
                 letterSpacing: '0.01em',
+                color: "#111", // Make text visible in input
+                backgroundColor: "#fafbfc"
               }}
             />
           </div>
